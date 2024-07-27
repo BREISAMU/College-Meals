@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+    <legend class="border-bottom mb-4">What best describes your meal?</legend>
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <a class="btn btn-info mb-4" href="{{ url_for('main.home') }}">Breakfast</a>
+        <a class="btn btn-info mb-4" href="{{ url_for('main.home') }}">Lunch</a>
+        <a class="btn btn-info mb-4" href="{{ url_for('main.home') }}">Dinner</a>
+        <a class="btn btn-info mb-4" href="{{ url_for('main.home') }}">Dessert</a>
+    </div>
+{% endblock content %}

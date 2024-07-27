@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='/header/favicon.ico') }}">
+
+    {% if title %}
+    <title>Meals Made Easy - {{ title }}</title>
+    {% else %}
+    <title>Meals Made Easy</title>
+    {% endif %}
+</head>
+<body>
+<header class="site-header">
+    <nav class="navbar navbar-expand-md navbar-dark bg-top fixed-top">
+        <a class="navbar-brand mr-3" href="/" ><img src="{{ url_for('static', filename='header/MME2.jpeg') }}"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggle">
+                <div class="navbar-nav">
+                    <a class="navbar-brand pl-3 mr-3" href="{{ url_for('main.breakfast') }}">Breakfast</a>
+                    <a class="navbar-brand mr-3" href="{{ url_for('main.lunch') }}">Lunch</a>
+                    <a class="navbar-brand mr-3" href="{{ url_for('main.dinner') }}">Dinner</a>
+                    <a class="navbar-brand mr-3" href="{{ url_for('main.dessert') }}">Dessert</a>
+                    <a class="navbar-brand pl-4 mr-3" href="{{ url_for('main.cheap') }}">Budget-Friendly Options</a>
+                </div>
+                <!-- Navbar Right Side -->
+                <div class="navbar-nav ml-auto">
+                    {% if current_user.is_authenticated %}
+                        <a class="nav-item text-white font-weight-bold pr-5 nav-link" href="{{ url_for('posts.new_post') }}">Post a Recipe!</a>
+                        <a class="nav-item pl-1 nav-link" href="{{ url_for('users.logout') }}">Logout</a>
+                        <a class="nav-item nav-link" href="{{ url_for('users.account') }}">Account</a>
+                    {% else %}
+                        <a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a>
+                        <a class="nav-item nav-link" href="{{ url_for('users.register') }}">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+    </nav>
+</header>
+<main role="main" class="container">
+    <div class="row">
+        <div class="col-md-8">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+        </div>
+        {% if allPosts %}
+        <div class="col-md-4">
+            <div class="content-section">
+                <p class="bg-post_title"></p>
+                <h3 class="fav-title">Your Likes</h3>
+                {% if current_user.is_authenticated==False %}
+                    <h1><a class="bg-post_prompt" href="{{ url_for('users.login') }}">Log in to like your favorite recipes!</a></h1>
+                {% endif %}
+                {% if current_user.has_liked_post %}
+                    {% for post in allPosts %}
+                        {% if current_user.has_liked_post(post) %}
+                            <a class="favorites" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a>
+                            <br></br>
+                        {% endif %}
+                    {% endfor %}
+                <br></br>
+
+                {% if title %}
+                    <p class="bg-post_title"></p>
+                {% endif %}
+                {% if user %}
+                    <p class="bg-post_title"></p>
+                {% endif %}
+
+                {% endif %}
+                {% if current_user.is_authenticated!=False %}
+                    {% if title %}
+                        <h3 class="fav-title">Your {{ title }} Likes</h3>
+
+                        {% if title == "Budget" %}
+                            {% if current_user.has_liked_post %}
+                                {% for post in allPosts %}
+                                    {% if post.price in ["Cheap"] %}
+                                        {% if current_user.has_liked_post(post) %}
+                                            <a class="favorites" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a>
+                                            <br></br>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                        {% if current_user.has_liked_post %}
+                            {% for post in allPosts %}
+                                {% if post.type in [title] %}
+                                    {% if current_user.has_liked_post(post) %}
+                                        <a class="favorites" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a>
+                                        <br></br>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if current_user.has_liked_post %}
+                            {% for post in allPosts %}
+                                {% if post.type in [typeCheck] %}
+                                    {% if post.price in ["Cheap"] %}
+                                        {% if current_user.has_liked_post(post) %}
+                                            <a class="favorites" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a>
+                                            <br></br>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endif %}
+
+                {% if current_user.is_authenticated!=False %}
+                    {% if user %}
+                        <h3>Your likes from {{ user.username }}</h3>
+                        {% if current_user.has_liked_post %}
+                            {% for post in allPosts %}
+                                {% if post.author in [user] %}
+                                    {% if current_user.has_liked_post(post) %}
+                                        <a class="favorites" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a>
+                                        <br></br>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</main>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "projectId": "prj_mz9heXdtTVwgOwo11xQAosCCtsYJ",
+  "orgId": "team_fq3DaR3QlvICwCEJVobQ8Ys4",
+  "settings": {
+    "createdAt": 1718244487022,
+    "framework": null,
+    "devCommand": null,
+    "installCommand": null,
+    "buildCommand": null,
+    "outputDirectory": "src\\templates",
+    "rootDirectory": null,
+    "directoryListing": false,
+    "nodeVersion": "20.x"
+  }
+}
